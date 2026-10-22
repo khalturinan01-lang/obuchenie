@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Репетитор по математике — 4–5 классы</title>
+<style>
+  :root {
+    --bg-1: #9a6a45;
+    --bg-2: #7a4f33;
+    --bg-3: #5e3b26;
+    --text: #fff7ec;
+    --muted: #f0dcc4;
+    --gold: #ffd28a;
+    --orange: #ff9f5a;
+    --cream: #fff1d6;
+    --card: rgba(255, 247, 236, .1);
+    --card-border: rgba(255, 230, 200, .25);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    color: var(--text);
+    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* Тёплые светящиеся пятна на фоне */
+  .glow {
+    position: fixed; border-radius: 50%; filter: blur(90px); opacity: .35; z-index: 0; pointer-events: none;
+    animation: float 14s ease-in-out infinite alternate;
+  }
+  .glow.one { width: 420px; height: 420px; background: var(--orange); top: -140px; left: -100px; }
+  .glow.two { width: 360px; height: 360px; background: var(--gold); bottom: -140px; right: -80px; animation-delay: -7s; }
+  @keyframes float { to { transform: translate(60px, 40px) scale(1.1); } }
+
+  /* Плавающие математические знаки */
+  .symbols { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .symbols span {
+    position: absolute; font-size: 42px; font-weight: 700; color: var(--cream); opacity: .08;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes drift { to { transform: translateY(-40px) rotate(15deg); } }
+
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* Шапка */
+  .hero { text-align: center; padding: 88px 0 48px; }
+  .badge {
+    display: inline-block; padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--card-border); background: var(--card);
+    font-size: 14px; color: var(--muted); margin-bottom: 24px;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(36px, 7.5vw, 68px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    background: linear-gradient(90deg, var(--cream), var(--gold), var(--orange), var(--gold), var(--cream));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 8s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: 300% 0; } }
+  .lead { max-width: 640px; margin: 20px auto 0; font-size: clamp(17px, 2.6vw, 21px); line-height: 1.6; color: var(--muted); }
+
+  section { padding: 40px 0; }
+  h2 { text-align: center; font-size: clamp(26px, 4.5vw, 38px); margin: 0 0 32px; }
+
+  /* Карточки преимуществ */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card {
+    position: relative;
+    padding: 28px 24px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  /* Подсветка, которая следует за курсором */
+  .card::before {
+    content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(240px circle at var(--x, 50%) var(--y, 50%), rgba(255, 210, 138, .22), transparent 70%);
+  }
+  .card:hover { transform: translateY(-6px); border-color: rgba(255, 210, 138, .6); }
+  .card:hover::before { opacity: 1; }
+  .icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    display: grid; place-items: center; margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    box-shadow: 0 8px 24px rgba(255, 159, 90, .35);
+  }
+  .icon svg { width: 28px; height: 28px; }
+  .card h3 { position: relative; margin: 0 0 10px; font-size: 20px; }
+  .card p { position: relative; margin: 0; color: var(--muted); line-height: 1.55; }
+
+  /* Мини-задачка */
+  .quiz {
+    max-width: 560px; margin: 0 auto; padding: 28px 24px; text-align: center;
+    border-radius: 20px; background: var(--card); border: 1px dashed var(--card-border);
+  }
+  .quiz .task { font-size: clamp(22px, 4vw, 30px); font-weight: 700; margin: 0 0 18px; }
+  .answers { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .answers button {
+    min-width: 72px; padding: 12px 18px; border-radius: 12px;
+    border: 1px solid var(--card-border); background: rgba(255, 247, 236, .12);
+    color: var(--text); font: inherit; font-size: 18px; font-weight: 600; cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+  .answers button:hover { background: rgba(255, 247, 236, .22); transform: translateY(-2px); }
+  .answers button.right { background: #4caf6a; border-color: #4caf6a; }
+  .answers button.wrong { background: #c4553b; border-color: #c4553b; }
+  .quiz-result { margin: 16px 0 0; min-height: 1.5em; color: var(--cream); }
+
+  /* Для кого */
+  .audience { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .who {
+    padding: 24px; border-radius: 20px;
+    background: linear-gradient(160deg, rgba(255, 210, 138, .12), rgba(255, 159, 90, .05));
+    border: 1px solid var(--card-border);
+  }
+  .who strong { display: block; font-size: 18px; margin-bottom: 8px; }
+  .who span { color: var(--muted); line-height: 1.55; }
+  .benefit {
+    max-width: 740px; margin: 28px auto 0; text-align: center;
+    font-size: clamp(16px, 2.4vw, 19px); line-height: 1.6;
+  }
+  .benefit b { color: var(--gold); }
+
+  /* Призыв к действию */
+  .cta { text-align: center; padding: 56px 0 88px; }
+  .btn {
+    display: inline-block;
+    padding: 20px 44px;
+    border: 0; border-radius: 999px;
+    font: inherit; font-size: 19px; font-weight: 700; color: #4a2a17;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    cursor: pointer;
+    animation: pulse 2s ease-out infinite;
+    transition: transform .2s;
+  }
+  .btn:hover { transform: scale(1.05); }
+  .btn:active { transform: scale(.97); }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 210, 138, .7); }
+    70%  { box-shadow: 0 0 0 22px rgba(255, 210, 138, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 210, 138, 0); }
+  }
+  .note { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+  .thanks {
+    margin: 22px auto 0; max-width: 440px; padding: 16px 20px; border-radius: 14px;
+    background: rgba(255, 210, 138, .15); border: 1px solid rgba(255, 210, 138, .5);
+  }
+  .contact { display: inline-block; margin-top: 22px; color: var(--gold); text-decoration: none; font-weight: 600; }
+  .contact:hover { text-decoration: underline; }
+
+  /* Плавное появление при прокрутке */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  footer { text-align: center; padding: 0 0 32px; font-size: 13px; color: var(--muted); }
+
+  /* Телефон */
+  @media (max-width: 780px) {
+    .hero { padding: 60px 0 28px; }
+    .cards, .audience { grid-template-columns: 1fr; }
+    .btn { width: 100%; padding: 18px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="glow one"></div>
+<div class="glow two"></div>
+<div class="symbols" aria-hidden="true">
+  <span style="top:12%;left:8%">+</span>
+  <span style="top:30%;right:10%">÷</span>
+  <span style="top:58%;left:5%">×</span>
+  <span style="top:75%;right:14%">=</span>
+  <span style="top:88%;left:40%">½</span>
+  <span style="top:6%;right:35%">π</span>
+</div>
+
+<div class="wrap">
+
+  <header class="hero reveal">
+    <span class="badge">📚 Онлайн и очно · 4–5 классы</span>
+    <h1>Математика без слёз и страха</h1>
+    <p class="lead">Репетитор по математике для 4–5 классов: объясняю просто, закрываю пробелы и возвращаю ребёнку уверенность и хорошие оценки.</p>
+  </header>
+
+  <section>
+    <h2 class="reveal">Почему со мной получается</h2>
+    <div class="cards">
+      <article class="card reveal">
+        <div class="icon">
+          <!-- Лампочка: понятные объяснения -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4a2a17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>
+        </div>
+        <h3>Объясняю просто</h3>
+        <p>Дроби — через пиццу, задачи на движение — через мультики. Сложное становится понятным, а уроки — интересными.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon">
+          <!-- Пазл: индивидуальный план -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4a2a17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3a2 2 0 1 1 4 0h3v3a2 2 0 1 1 0 4v3h-3a2 2 0 1 0-4 0H4v-3a2 2 0 1 0 0-4z"/></svg>
+        </div>
+        <h3>План под вашего ребёнка</h3>
+        <p>На первом занятии нахожу пробелы и составляю личный план: таблица умножения, дроби, задачи, подготовка к ВПР.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon">
+          <!-- График роста: видимый результат -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4a2a17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/><path d="M15 7h5v5"/></svg>
+        </div>
+        <h3>Результат, который видно</h3>
+        <p>После каждого занятия — короткий отчёт для родителей. Первые улучшения в оценках обычно видны уже через месяц.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="reveal">Проверьте себя за 10 секунд</h2>
+    <div class="quiz reveal">
+      <p class="task">У Маши была пицца из 8 кусочков. Она съела 3. Какая часть пиццы осталась?</p>
+      <div class="answers" id="answers">
+        <button data-right="false">3/8</button>
+        <button data-right="true">5/8</button>
+        <button data-right="false">5/3</button>
+        <button data-right="false">1/2</button>
+      </div>
+      <p class="quiz-result" id="quiz-result" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="reveal">Кому подойдёт</h2>
+    <div class="audience">
+      <div class="who reveal">
+        <strong>😟 Если ребёнку трудно</strong>
+        <span>Тройки, слёзы над домашкой, «я не понимаю» — разберём по шагам и вернём интерес.</span>
+      </div>
+      <div class="who reveal">
+        <strong>📝 Перед ВПР и контрольными</strong>
+        <span>Повторим всё важное, потренируемся на реальных заданиях и снимем волнение.</span>
+      </div>
+      <div class="who reveal">
+        <strong>🚀 Для перехода в среднюю школу</strong>
+        <span>Крепкая база в 4–5 классе — это спокойная алгебра и геометрия в 7–9.</span>
+      </div>
+    </div>
+    <p class="benefit reveal">Почему это выгодно: закрыть пробелы сейчас <b>в разы проще и дешевле</b>, чем исправлять их потом в старших классах. А занятия онлайн экономят <b>время на дорогу</b> — и ваше, и ребёнка.</p>
+  </section>
+
+  <section class="cta reveal">
+    <h2>Запишитесь на пробный урок</h2>
+    <button class="btn" id="cta">Записаться бесплатно</button>
+    <p class="note">Первое занятие — бесплатно · 45 минут · онлайн или очно</p>
+    <div class="thanks" id="thanks" hidden>🎉 Спасибо! Напишите мне в Telegram — подберём удобное время для пробного урока.</div>
+    <br>
+    <a class="contact" href="https://t.me/nadyushka_kh" target="_blank" rel="noopener">Написать в Telegram: @nadyushka_kh</a>
+  </section>
+
+</div>
+
+<footer>© 2026 Репетитор по математике. Учебный проект.</footer>
+
+<script>
+  // Плавное появление блоков при прокрутке
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Подсветка карточек за курсором
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--y', (e.clientY - rect.top) + 'px');
+    });
+  });
+
+  // Мини-задачка
+  const result = document.getElementById('quiz-result');
+  document.querySelectorAll('#answers button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#answers button').forEach(b => b.classList.remove('right', 'wrong'));
+      if (btn.dataset.right === 'true') {
+        btn.classList.add('right');
+        result.textContent = '✅ Верно! 8 − 3 = 5 кусочков, значит осталось 5/8 пиццы.';
+      } else {
+        btn.classList.add('wrong');
+        result.textContent = '🤔 Почти! Подумайте, сколько кусочков осталось из восьми.';
+      }
+    });
+  });
+
+  // Кнопка призыва к действию
+  document.getElementById('cta').addEventListener('click', () => {
+    document.getElementById('thanks').hidden = false;
+  });
+</script>
+</body>
+</html>
